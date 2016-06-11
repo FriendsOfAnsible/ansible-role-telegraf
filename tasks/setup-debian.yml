@@ -1,0 +1,18 @@
+---
+# Ubuntu 14.04 comes with Python 2.7.6 which does not work with SNI... so back to good old wget instead of get_url!
+- name: download telegraf deb
+  shell: wget -O /tmp/telegraf_{{ telegraf_version }}.deb {{ telegraf_linux_url }}
+
+- name: install telegraf agent
+  become: yes
+  apt: deb=/tmp/telegraf_{{ telegraf_version }}.deb
+
+#- name: configure telegraf agent
+#  become: yes
+#  template:
+#    src: telegraf.conf.j2
+#    dest: "{{ telegraf_linux_path }}telegraf.conf"
+
+# hack for now to always force restart as it will not restart if the version changes but not the config
+#- name: restart telegraf agent
+#  service: name=telegraf state=restarted

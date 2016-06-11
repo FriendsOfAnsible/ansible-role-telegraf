@@ -1,0 +1,51 @@
+---
+- name: install nssm
+  win_chocolatey: 
+    name: nssm
+    state: present
+
+- name: create telegraf folder
+  win_file:
+    path: "{{ telegraf_win_path }}"
+    state: directory
+
+- name: download telegraf release
+  win_get_url:
+    url: "{{ telegraf_win_url }}"
+    dest: "{{ telegraf_win_path }}telegraf_{{ telegraf_version }}.zip"
+
+#- name: stop telegraf service
+#  win_service: 
+#    name: Telegraf
+#    state: stopped
+#  ignore_errors: yes  
+
+#- name: nssm remove
+#  raw: nssm.exe remove Telegraf confirm
+#  ignore_errors: yes
+
+# - name: extract telegraf zip
+#   win_unzip:
+#     src: "{{ telegraf_win_path }}telegraf_{{ telegraf_version }}.zip"
+#     dest: "{{ telegraf_win_path }}"
+#     rm: true
+
+# - name: copy telegraf.exe to the desired place (the zip file has a telegraf folder inside)    
+  
+# - name: Remove the folder created by win_unzip
+#   win_file: 
+#     path: "{{ telegraf_win_path }}/telegraf"
+#     state: absent
+
+# - name: configure telegraf agent
+#   win_template:
+#     src: telegraf.confwin.j2
+#     dest: "{{ telegraf_win_path }}telegraf.conf"
+
+# - name: install telegraf service
+#   raw: nssm.exe install Telegraf {{ telegraf_win_path }}telegraf.exe -config {{ telegraf_win_path }}telegraf.conf
+
+# - name: start telegraf service
+#   win_service: 
+#     name: Telegraf
+#     state: started

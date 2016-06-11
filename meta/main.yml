@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  author: Friends Of Ansible
+  description: Ansible role to install the Telegraf agent
+  company: Friends Of Ansible
+  license: MIT
+  min_ansible_version: 1.9
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+
+    - name: Debian
+      versions:
+        - all
+
+    - name: Windows
+      versions:
+        - all
+    
+  galaxy_tags:
+    - telegraf
+    - influxdb
+
+dependencies: []

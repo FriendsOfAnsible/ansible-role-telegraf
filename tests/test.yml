@@ -1,0 +1,5 @@
+---
+- hosts: ubuntu
+
+  roles:
+    - ansible-role-telegraf
