@@ -12,40 +12,43 @@
 - name: download telegraf release
   win_get_url:
     url: "{{ telegraf_win_url }}"
-    dest: "{{ telegraf_win_path }}telegraf_{{ telegraf_version }}.zip"
+    dest: "{{ telegraf_win_path }}\\telegraf_{{ telegraf_version }}.zip"
 
-#- name: stop telegraf service
-#  win_service: 
-#    name: Telegraf
-#    state: stopped
-#  ignore_errors: yes  
+- name: stop telegraf service
+  win_service: 
+    name: Telegraf
+    state: stopped
+  ignore_errors: yes  
 
-#- name: nssm remove
-#  raw: nssm.exe remove Telegraf confirm
-#  ignore_errors: yes
+- name: nssm remove
+  raw: nssm.exe remove Telegraf confirm
+  ignore_errors: yes
 
-# - name: extract telegraf zip
-#   win_unzip:
-#     src: "{{ telegraf_win_path }}telegraf_{{ telegraf_version }}.zip"
-#     dest: "{{ telegraf_win_path }}"
-#     rm: true
+- name: extract telegraf zip
+  win_unzip:
+   src: "{{ telegraf_win_path }}\\telegraf_{{ telegraf_version }}.zip"
+   dest: "{{ telegraf_win_path }}"
+   rm: true
 
-# - name: copy telegraf.exe to the desired place (the zip file has a telegraf folder inside)    
-  
-# - name: Remove the folder created by win_unzip
-#   win_file: 
-#     path: "{{ telegraf_win_path }}/telegraf"
-#     state: absent
+- name: copy telegraf.exe to the desired place (the zip file has a telegraf folder inside)    
+  raw: Move-Item {{ telegraf_win_path }}\\{{ telegraf_zip_folder }}\\telegraf.exe {{ telegraf_win_path }}\\telegraf.exe -force
+  when: telegraf_zip_folder != ""
 
-# - name: configure telegraf agent
-#   win_template:
-#     src: telegraf.confwin.j2
-#     dest: "{{ telegraf_win_path }}telegraf.conf"
+- name: Remove the folder created by win_unzip
+  win_file: 
+    path: "{{ telegraf_win_path }}\\{{ telegraf_zip_folder }}"
+    state: absent
+  when: telegraf_zip_folder != ""  
 
-# - name: install telegraf service
-#   raw: nssm.exe install Telegraf {{ telegraf_win_path }}telegraf.exe -config {{ telegraf_win_path }}telegraf.conf
+- name: configure telegraf agent
+  win_template:
+    src: telegraf.confwin.j2
+    dest: "{{ telegraf_win_path }}\\telegraf.conf"
 
-# - name: start telegraf service
-#   win_service: 
-#     name: Telegraf
-#     state: started
+- name: install telegraf service
+  raw: nssm.exe install Telegraf {{ telegraf_win_path }}\\telegraf.exe -config {{ telegraf_win_path }}\\telegraf.conf
+
+- name: start telegraf service
+  win_service: 
+    name: Telegraf
+    state: started

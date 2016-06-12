@@ -2,4 +2,21 @@
 - hosts: ubuntu
 
   roles:
-    - ansible-role-telegraf
+    - role: ansible-role-telegraf
+      telegraf_inputs:
+        -
+          type: cpu
+          config:
+            percpu: "true"
+            totalcpu: "true"
+            drop:
+              - cpu_time
+        -
+          type: disk
+          config:
+            mountpoints:
+              - "/"
+        -
+          type: mem
+        -
+          type: system                  

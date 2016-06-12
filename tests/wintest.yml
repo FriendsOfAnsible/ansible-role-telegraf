@@ -5,4 +5,38 @@
     telegraf_version: 1.0.0-beta1
     
   roles:
-    - ansible-role-telegraf
+    - role: ansible-role-telegraf
+      telegraf_inputs:
+        -
+          type: udp_listener
+          config:
+            service_address: ":8092"
+            allowed_pending_messages: 10000
+            data_format: "influx"
+
+        -
+          type: win_perf_counters
+          subinputs:
+             -
+               type: object
+               config:
+                 ObjectName: "Memory"
+                 Counters: ["Available Bytes"]
+                 Instances: ["------"]
+                 Measurement: "win_mem"
+
+             -
+               type: object
+               config:
+                ObjectName: "Processor"
+                Instances: ["*"]
+                Counters: ["% Idle Time", "% User Time", "% Processor Time"]
+                Measurement: "win_cpu"
+
+             -
+               type: object
+               config:
+                 ObjectName: "LogicalDisk"
+                 Instances: ["C:", "D:"]
+                 Counters: ["% Free Space", "Free Megabytes"]
+                 Measurement: "win_disk"

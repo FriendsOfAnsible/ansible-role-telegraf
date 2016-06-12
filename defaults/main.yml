@@ -8,7 +8,8 @@ telegraf_linux_path: /etc/telegraf/
 # defaults values for telegraf windows
 telegraf_win_url: https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}_windows_amd64.zip
 
-telegraf_win_path: C:\telegraf\
+telegraf_win_path: C:\telegraf
+telegraf_zip_folder: telegraf
 
 telegraf_debug: "false"
 telegraf_agent_interval: 30s
@@ -16,4 +17,18 @@ telegraf_round_interval: "false"
 telegraf_flush_interval: 30s
 telegraf_flush_jitter: 15s
 
-telegraf_outputs: []
+telegraf_influxdb_urls: 
+  - http://localhost:8086
+telegraf_influxdb_database: telegraf
+telegraf_influxdb_precision: s
+telegraf_influxdb_timeout: 5s
+
+telegraf_inputs: []
+telegraf_outputs:
+  -
+    type: influxdb
+    config:
+      urls: "{{ telegraf_influxdb_urls }}"
+      database: "{{ telegraf_influxdb_database }}"
+      precision: "{{ telegraf_influxdb_precision }}"
+      timeout: "{{ telegraf_influxdb_timeout }}"
