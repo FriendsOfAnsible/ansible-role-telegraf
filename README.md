@@ -67,18 +67,194 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - FriendsOfAnsible.telegraf
+     - role: FriendsOfAnsible.telegraf
+        telegraf_inputs:
+          -
+            type: disk
+            config:
+              mountpoints:
+                - "/"
+          -
+            type: mem
+
 ```         
+
+Notes on Windows support
+------------------------
+
+Support for Windows in Telegraf is experimental although we have succesfully installed it in Windows 2008, 2012, 2012R2
+
+The win_chocolatey Ansible module fails sometimes in Windows 2008 if chocolatey is not installed in the targetted box. 
+A "hack" that we have found useful has been to add these 2 tasks at the beginning:
+
+```yaml
+- name: Chcolatey installation
+  win_chocolatey:
+    name: chocolatey
+    state: present
+    upgrade: no
+
+- name: Fix problem with Chocolatey (https://github.com/ansible/ansible-modules-extras/issues/378)
+  raw: Chocolatey feature enable -n allowGlobalConfirmation
+```
+
+Alternatively, you may also try to explicitly install Chocolatey before running the role with:
+
+```yaml
+- name: install chocolatey explicitly
+  raw: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+```
 
 Telegraf inputs
 ---------------
 
-Docs coming soon
+Multiple inputs are supported, hopefully allowing every combination the Telegraf agent supports.
+Some examples we are using:
+
+Linux host running RabbitMQ. Collection of both system metrics and RabbitMQ metrics
+
+```yaml
+      telegraf_inputs:
+        -
+          type: cpu
+          config:
+            percpu: "true"
+            totalcpu: "true"
+            drop:
+              - cpu_time
+        -
+          type: disk
+          config:
+            mountpoints:
+              - "/"
+        -
+          type: io
+          config:
+            skip_serial_number: "true"
+        -
+          type: mem
+        -
+          type: system
+        -
+          type: rabbitmq
+          config:
+            url: "http://localhost:15672"
+            username: admin
+            password: changeme
+```
+
+Windows host running MSMQ. Collection of multiple win_perf_counters
+
+```yaml
+      telegraf_inputs:
+        -
+          type: win_perf_counters
+          subinputs:
+             -
+               type: object
+               config:
+                 ObjectName: "Memory"
+                 Counters: ["Available Bytes","Cache Faults/sec","Demand Zero Faults/sec","Page Faults/sec","Pages/sec","Transition Faults/sec","Pool Nonpaged Bytes","Pool Paged Bytes"]
+                 Instances: ["------"]
+                 Measurement: "win_mem"
+
+             -
+               type: object
+               config:
+                ObjectName: "Processor"
+                Instances: ["*"]
+                Counters: ["% Idle Time", "% Interrupt Time", "% Privileged Time", "% User Time", "% Processor Time"]
+                Measurement: "win_cpu"
+
+             -
+               type: object
+               config:
+                 ObjectName: "LogicalDisk"
+                 Instances: ["C:", "D:"]
+                 Counters: ["% Idle Time", "% Disk Time","% Disk Read Time", "% Disk Write Time", "% User Time", "Current Disk Queue Length", "% Free Space", "Free Megabytes"]
+                 Measurement: "win_disk"
+
+             -
+                type: object
+                config:
+                  ObjectName: "MSMQ Service"
+                  Instances: ["------"]
+                  Counters: ["Total messages in all queues", "Total bytes in all queues", "Sessions", "Outgoing Messages/sec", "MSMQ Outgoing Messages", "MSMQ Incoming Messages", "IP Sessions", "Incoming Messages/sec"]
+                  Measurement: "msmq_service"
+
+             -
+                type: object
+                config:
+                  ObjectName: "MSMQ Queue"
+                  Instances: ["*"]
+                  Counters: ["Messages in Queue", "Messages in Journal Queue", "Bytes in Queue", "Bytes in Journal Queue"]
+                  Measurement: "msmq_queue"
+
+             -
+                type: object
+                config:
+                  ObjectName: "MSMQ Session"
+                  Instances: ["*"]
+                  Counters: ["Outgoing Bytes", "Incoming Bytes", "Outgoing Messages", "Incoming Messages", "Outgoing Bytes/sec", "Incoming Bytes/sec", "Outgoing Messages/sec", "Incoming Messages/sec"]
+                  Measurement: "msmq_session"
+```
 
 Telegraf outputs
 ----------------
 
-Docs coming soon
+Multiple outputs are also supported. 
+
+One particularly useful use case we are using is target different influxdb databases which may have different retention policies (for instance, keep system metrics for 1 month but business metrics for 12 months).
+
+Another use case would be sending data to both InfluxDB and Cloudwatch for instance.
+
+Please check [https://github.com/influxdata/telegraf](https://github.com/influxdata/telegraf) to see all possible outputs you can define.
+
+Linux host running RabbitMQ as described in the inputs section. Targetting different influx databases in the same host using namepass and namedrop tags.
+
+```yaml
+      telegraf_outputs:
+        -
+          type: influxdb
+          config:
+            urls: "{{ telegraf_influxdb_urls }}"
+            database: "{{ telegraf_influxdb_database }}"
+            precision: "{{ telegraf_influxdb_precision }}"
+            timeout: "{{ telegraf_influxdb_timeout }}"
+            namedrop: ["rabbitmq*"]
+
+        -
+          type: influxdb
+          config:
+            urls: "{{ telegraf_influxdb_urls }}"
+            database: "rabbitmq"
+            precision: "{{ telegraf_influxdb_precision }}"
+            timeout: "{{ telegraf_influxdb_timeout }}"
+            namepass: ["rabbitmq*"]
+```
+
+Windows host running MSMQ as described in the inputs section. Targetting different influxdb databases in the same host using namepass tags.
+
+```yaml
+      telegraf_outputs:
+        -
+          type: influxdb
+          config:
+            urls: "{{ telegraf_influxdb_urls }}"
+            database: "{{ telegraf_influxdb_database }}"
+            precision: "{{ telegraf_influxdb_precision }}"
+            timeout: "{{ telegraf_influxdb_timeout }}"
+            namepass: ["win*"]
+
+        -
+          type: influxdb
+          config:
+            urls: "{{ telegraf_influxdb_urls }}"
+            database: "msmq"
+            precision: "{{ telegraf_influxdb_precision }}"
+            timeout: "{{ telegraf_influxdb_timeout }}"
+            namepass: ["msmq*"]
+```
 
 License
 -------
