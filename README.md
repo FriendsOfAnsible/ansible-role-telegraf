@@ -199,14 +199,39 @@ Windows host running MSMQ. Collection of multiple win_perf_counters
                   Measurement: "msmq_session"
 ```
 
+Host listening on a UDP port and also acting as a Statsd listener so that we can send business metrics to these ports and they will get forwarded to the defined outputs
+
+```yaml
+      telegraf_inputs:
+        -
+          type: statsd
+          config:
+            service_address: ":8125"
+            delete_counters: "true"
+            delete_gauges: "false"
+            delete_sets: "false"
+            delete_timings: "true"
+            metric_separator: "_"
+            parse_data_dog_tags: "false"
+            allowed_pending_messages: 10000
+            percentile_limit: 1000
+
+        -
+          type: udp_listener
+          config:
+            service_address: ":8092"
+            allowed_pending_messages: 10000
+            data_format: "influx"
+```
+
 Telegraf outputs
 ----------------
 
 Multiple outputs are also supported. 
 
-One particularly useful use case we are using is target different influxdb databases which may have different retention policies (for instance, keep system metrics for 1 month but business metrics for 12 months).
+One particularly useful use case is target different influxdb databases which may have different retention policies (for instance, keep system metrics for 1 month but business metrics for 12 months).
 
-Another use case would be sending data to both InfluxDB and Cloudwatch for instance.
+Another use case would be for instance sending data to both InfluxDB and AWS Cloudwatch.
 
 Please check [https://github.com/influxdata/telegraf](https://github.com/influxdata/telegraf) to see all possible outputs you can define.
 
