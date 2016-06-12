@@ -11,6 +11,7 @@ before_install:
  - sudo apt-get -y install software-properties-common
  - sudo apt-get -y install python-pip
  - sudo pip install xmltodict
+ - sudo pip install winrm
  - sudo pip install ansible==$ANSIBLE_VERSION
  - ansible --version
 
