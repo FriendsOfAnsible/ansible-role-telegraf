@@ -111,7 +111,7 @@ Telegraf inputs
 Multiple inputs are supported, hopefully allowing every combination the Telegraf agent supports.
 Some examples we are using:
 
-Linux host running RabbitMQ. Collection of both system metrics and RabbitMQ metrics
+**Linux host running RabbitMQ. Collection of both system metrics and RabbitMQ metrics**
 
 ```yaml
       telegraf_inputs:
@@ -143,7 +143,7 @@ Linux host running RabbitMQ. Collection of both system metrics and RabbitMQ metr
             password: changeme
 ```
 
-Windows host running MSMQ. Collection of multiple win_perf_counters
+**Windows host running MSMQ. Collection of multiple win_perf_counters**
 
 ```yaml
       telegraf_inputs:
@@ -199,7 +199,7 @@ Windows host running MSMQ. Collection of multiple win_perf_counters
                   Measurement: "msmq_session"
 ```
 
-Host listening on a UDP port and also acting as a Statsd listener so that we can send business metrics to these ports and they will get forwarded to the defined outputs
+**Host listening on a UDP port and also acting as a Statsd listener so that we can send business metrics to these ports and they will get forwarded to the defined outputs**
 
 ```yaml
       telegraf_inputs:
@@ -235,7 +235,9 @@ Another use case would be for instance sending data to both InfluxDB and AWS Clo
 
 Please check [https://github.com/influxdata/telegraf](https://github.com/influxdata/telegraf) to see all possible outputs you can define.
 
-Linux host running RabbitMQ as described in the inputs section. Targetting different influx databases in the same host using namepass and namedrop tags.
+Some examples:
+
+**Linux host running RabbitMQ as described in the inputs section. Targetting different influx databases in the same host using namepass and namedrop tags.**
 
 ```yaml
       telegraf_outputs:
@@ -258,7 +260,7 @@ Linux host running RabbitMQ as described in the inputs section. Targetting diffe
             namepass: ["rabbitmq*"]
 ```
 
-Windows host running MSMQ as described in the inputs section. Targetting different influxdb databases in the same host using namepass tags.
+**Windows host running MSMQ as described in the inputs section. Targetting different influxdb databases in the same host using namepass tags.**
 
 ```yaml
       telegraf_outputs:
