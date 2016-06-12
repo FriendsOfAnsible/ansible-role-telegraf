@@ -3,7 +3,7 @@ telegraf_version: 0.13.1
 
 # defaults file for telegraf linux
 telegraf_linux_url: https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb
-telegraf_linux_path: /etc/telegraf/
+telegraf_linux_path: /etc/telegraf
 
 # defaults values for telegraf windows
 telegraf_win_url: https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}_windows_amd64.zip
