@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
       
       # vagrant automatic inventory seems to still be using 
       # the old Ansible 1.x arguments which makes Ansible fail
-      ansible.inventory_path = "tests/inventory"
+      ansible.inventory_path = "tests/vagrant_inventory"
       ansible.raw_arguments  = [
          "-vvv"
       ]
