@@ -1,9 +1,16 @@
 ---
+- local_action: command ansible --version
+  register: version
+
 - include: setup-debian.yml
   when: ansible_os_family == 'Debian'
 
 - include: setup-windows.yml
-  when: ansible_os_family == 'Windows'
+  when: ansible_os_family == 'Windows' and version.major >= 2
+
+- fail:
+    msg: "Windows is only supported in Ansible 2.x and bigger"
+  when: ansible_os_family == 'Windows' and version.major < 2
 
 # coming soon
 #- include: setup-redhat.yml

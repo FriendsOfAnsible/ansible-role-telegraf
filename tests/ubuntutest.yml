@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: ubuntu
 
   roles:
     - role: ansible-role-telegraf

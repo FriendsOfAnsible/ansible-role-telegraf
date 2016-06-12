@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
     config.vm.box = "ubuntu/trusty64"
 
     config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "tests/test.yml"
+      ansible.playbook = "tests/ubuntutest.yml"
       ansible.raw_arguments  = [
          "--sudo",
          "-vvv"
