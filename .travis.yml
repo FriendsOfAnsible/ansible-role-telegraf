@@ -4,7 +4,7 @@ dist: trusty
 
 matrix:
   include:
-    - env: ANSIBLE_VERSION=2.0.2
+    - env: ANSIBLE_VERSION=1.9.5
     - env: ANSIBLE_VERSION=2.1.0
 
 before_install:
@@ -18,7 +18,7 @@ before_install:
 
 script:
   # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - if [ "$ANSIBLE_VERSION" == "2.1.0" ]; then ansible-playbook tests/test.yml -i tests/inventory --syntax-check; fi
   # Provision kibana
   - ansible-playbook tests/test.yml -i tests/inventory -c local --sudo
 
