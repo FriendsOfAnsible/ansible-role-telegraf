@@ -1,7 +1,4 @@
 ---
-- assert:
-    that: ansible_version.major >= 2
-
 - name: install nssm
   win_chocolatey: 
     name: nssm

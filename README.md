@@ -8,7 +8,7 @@ Role to install the [Telegraf]() agent both in Linux and Windows boxes
 Requirements
 ------------
 
-Ansible >= 1.9
+Ansible >= 2.0
 
 Please check [Ansible - Windows support](http://docs.ansible.com/ansible/intro_windows.html) for instructions on how to prepare your Windows hosts to be able to automate them using WinRM from Ansible
 
