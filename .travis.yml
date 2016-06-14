@@ -19,6 +19,7 @@ before_install:
  - sudo apt-get install wget
  - ansible --version
  - wget --version
+ - lsb_release -a
 
 script:
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
