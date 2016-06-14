@@ -1,9 +1,15 @@
 ---
-telegraf_version: 0.13.1
+# either repo or download
+linux_install_method: repo
 
-# defaults file for telegraf linux
+# defaults for telegraf debian download
+telegraf_version: 0.13.1
 telegraf_linux_url: https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb
 telegraf_linux_path: /etc/telegraf
+
+# defaults for telegraf debian repo
+influxdata_gpg_key: https://repos.influxdata.com/influxdb.key
+telegraf_apt_repo: deb https://repos.influxdata.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
 
 # defaults values for telegraf windows
 telegraf_win_url: https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}_windows_amd64.zip

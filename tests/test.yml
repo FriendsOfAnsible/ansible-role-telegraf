@@ -20,3 +20,27 @@
           type: mem
         -
           type: system                  
+
+
+# Yes this will overwrite the installation but we get to test both methods!
+- hosts: all
+  roles:
+    - role: ansible-role-telegraf
+      linux_install_method: download
+      telegraf_inputs:
+        -
+          type: cpu
+          config:
+            percpu: "true"
+            totalcpu: "true"
+            drop:
+              - cpu_time
+        -
+          type: disk
+          config:
+            mountpoints:
+              - "/"
+        -
+          type: mem
+        -
+          type: system                  

@@ -1,6 +1,17 @@
 ---
 sudo: required
-dist: trusty
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+
+    - os: linux
+      dist: xenial  
+
+    - os: linux
+      dist: jessie
+
 
 before_install:
  - sudo apt-get -y install software-properties-common

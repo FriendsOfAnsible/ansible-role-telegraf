@@ -2,16 +2,30 @@
 # Ubuntu 14.04 comes with Python 2.7.6 which does not work with SNI... so back to good old wget instead of get_url!
 - name: download telegraf deb
   shell: wget -O /tmp/telegraf_{{ telegraf_version }}.deb {{ telegraf_linux_url }}
+  when: linux_install_method == "download"
 
 - name: install telegraf agent
   apt: deb=/tmp/telegraf_{{ telegraf_version }}.deb
+  when: linux_install_method == "download"
 
-- name: configure telegraf agent
-  template:
-    src: telegraf.conf.j2
-    dest: "{{ telegraf_linux_path }}/telegraf.conf"
+- name: Import InfluxData GPG signing key [Debian/Ubuntu]
+  apt_key:
+    url: "{{ influxdata_gpg_key }}"
+    state: present
+  when: linux_install_method == "repo"
 
-- name: restart telegraf agent
-  service: 
+- name: Add InfluxData repository [Debian/Ubuntu]
+  apt_repository:
+    repo: "{{ telegraf_apt_repo }}"
+    state: present  
+  when: linux_install_method == "repo"
+
+- name: Install Telegraf packages [Debian/Ubuntu]
+  apt: 
     name: telegraf
-    state: restarted
+    state: latest
+    update_cache: yes 
+    cache_valid_time: 3600
+  when: linux_install_method == "repo"
+
+- include: common-linux.yml
