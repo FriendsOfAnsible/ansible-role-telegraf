@@ -7,9 +7,6 @@ matrix:
       dist: trusty
 
     - os: linux
-      dist: xenial  
-
-    - os: linux
       dist: jessie
 
 
@@ -18,6 +15,7 @@ before_install:
  - sudo apt-get -y install python-pip
  - sudo pip install ansible
  - ansible --version
+ - wget --version
 
 script:
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
