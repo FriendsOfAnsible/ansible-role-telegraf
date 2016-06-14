@@ -12,8 +12,11 @@ matrix:
 
 before_install:
  - sudo apt-get -y install software-properties-common
+ - sudo apt-get update
  - sudo apt-get -y install python-pip
  - sudo pip install ansible
+ # wget needs to be updated to support SNI
+ - sudo apt-get install wget
  - ansible --version
  - wget --version
 

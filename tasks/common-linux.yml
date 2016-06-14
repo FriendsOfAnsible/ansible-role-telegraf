@@ -1,10 +1,10 @@
 ---
-- name: configure telegraf agent
+- name: Configure Telegraf agent
   template:
     src: telegraf.conf.j2
     dest: "{{ telegraf_linux_path }}/telegraf.conf"
 
-- name: restart telegraf agent
+- name: Restart Telegraf agent
   service: 
     name: telegraf
     state: restarted
